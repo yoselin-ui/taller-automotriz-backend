@@ -15,18 +15,28 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const app = express();
 
-// Middlewares - EN ESTE ORDEN
+// Configuración flexible de CORS
 app.use(
   cors({
-    origin: [
-      "http://localhost:3002",
-      "http://localhost:3001", // DOMINIO CORREGIDO: SE AGREGA LA URL DE TU FRONTEND EN VERCEL
-      "https://taller-automotriz-frontend-ten.vercel.app",
-      "https://taller-automotriz-frontend-2fipybtf.vercel.app", // ¡EL DOMINIO ACTUAL!
-    ],
+    origin: function (origin, callback) {
+      // Permitir peticiones sin origin (Postman, apps móviles, etc.)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = ["http://localhost:3001", "http://localhost:3002"];
+
+      // Permitir localhost o cualquier subdominio de vercel.app
+      if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+        callback(null, true);
+      } else {
+        callback(new Error("No permitido por CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 app.use(express.json());
 app.use(monitoringMiddleware);
 
@@ -45,6 +55,9 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en puerto ${PORT}`);
+  console.log(
+    `🌐 CORS habilitado para localhost y todos los dominios *.vercel.app`
+  );
   console.log(
     `📊 Métricas disponibles en http://localhost:${PORT}/api/metrics`
   );
