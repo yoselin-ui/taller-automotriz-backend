@@ -22,6 +22,7 @@ app.use(
       "http://localhost:3002",
       "http://localhost:3001", // DOMINIO CORREGIDO: SE AGREGA LA URL DE TU FRONTEND EN VERCEL
       "https://taller-automotriz-frontend-ten.vercel.app",
+      "https://taller-automotriz-frontend-2fipybtf.vercel.app", // ¡EL DOMINIO ACTUAL!
     ],
     credentials: true,
   })
